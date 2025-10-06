@@ -16,13 +16,11 @@ export const useFilteredPeople = (people: Person[]): Person[] => {
     const query = filter.query?.trim().toLowerCase();
 
     if (query) {
-      const lowerQuery = query.toLowerCase();
-
       filtered = filtered.filter(({ name, motherName, fatherName }) => {
         return [
-          name.toLowerCase().includes(lowerQuery),
-          motherName?.toLowerCase().includes(lowerQuery),
-          fatherName?.toLowerCase().includes(lowerQuery),
+          name.toLowerCase().includes(query),
+          (motherName ?? '').toLowerCase().includes(query),
+          (fatherName ?? '').toLowerCase().includes(query),
         ].some(Boolean);
       });
     }
@@ -45,15 +43,19 @@ export const useFilteredPeople = (people: Person[]): Person[] => {
         const aVal = a[sortKey];
         const bVal = b[sortKey];
 
-        if (aVal < bVal) {
-          return sortOrder === 'asc' ? -1 : 1;
+        let comparison: number;
+
+        if (sortKey === 'born' || sortKey === 'died') {
+          comparison = (aVal as number) - (bVal as number);
+        } else {
+          comparison = (aVal as string).localeCompare(
+            bVal as string,
+            undefined,
+            { sensitivity: 'base' },
+          );
         }
 
-        if (aVal > bVal) {
-          return sortOrder === 'asc' ? 1 : -1;
-        }
-
-        return 0;
+        return sortOrder === 'asc' ? comparison : -comparison;
       });
     }
 

@@ -19,7 +19,7 @@ export const PeopleTable = ({ people }: Props) => {
 
   const getSortParams = (key: SortKey) => {
     if (sortKey !== key) {
-      return { sort: key, order: 'asc' as const };
+      return { sort: key, order: null };
     }
 
     if (sortOrder === 'asc') {

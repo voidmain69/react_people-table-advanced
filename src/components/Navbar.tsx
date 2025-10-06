@@ -26,7 +26,6 @@ export const Navbar = () => {
           </NavLink>
 
           <NavLink
-            aria-current="page"
             className={({ isActive }) =>
               classNames('navbar-item', {
                 'has-background-grey-lighter': isActive,
