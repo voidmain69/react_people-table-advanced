@@ -9,19 +9,24 @@ export const useFilteredPeople = (people: Person[]): Person[] => {
   return useMemo(() => {
     let filtered = [...people];
 
-    // --- Фільтр за статтю ---
     if (filter.sex) {
       filtered = filtered.filter(p => p.sex === filter.sex);
     }
 
-    // --- Пошуковий фільтр ---
     const query = filter.query?.trim().toLowerCase();
 
     if (query) {
-      filtered = filtered.filter(p => p.name.toLowerCase().includes(query));
+      const lowerQuery = query.toLowerCase();
+
+      filtered = filtered.filter(({ name, motherName, fatherName }) => {
+        return [
+          name.toLowerCase().includes(lowerQuery),
+          motherName?.toLowerCase().includes(lowerQuery),
+          fatherName?.toLowerCase().includes(lowerQuery),
+        ].some(Boolean);
+      });
     }
 
-    // --- Фільтр за століттями ---
     const centuries = filter.centuries ?? [];
 
     if (centuries.length > 0) {
@@ -32,7 +37,6 @@ export const useFilteredPeople = (people: Person[]): Person[] => {
       });
     }
 
-    // --- Сортування ---
     const sortKey: SortKey | undefined = filter.sort?.key;
     const sortOrder: SortOrder = filter.sort?.order ?? 'asc';
 

@@ -14,13 +14,19 @@ export const useFilter = (): Filter => {
   const validSortKeys: SortKey[] = ['name', 'born', 'died', 'sex'];
   const validSortOrders: SortOrder[] = ['asc', 'desc'];
 
-  const sort: Filter['sort'] =
-    sortKeyRaw &&
-    validSortKeys.includes(sortKeyRaw as SortKey) &&
-    sortOrderRaw &&
-    validSortOrders.includes(sortOrderRaw as SortOrder)
-      ? { key: sortKeyRaw as SortKey, order: sortOrderRaw as SortOrder }
-      : null;
+  let sort: Filter['sort'] = null;
+
+  if (sortKeyRaw && validSortKeys.includes(sortKeyRaw as SortKey)) {
+    const order =
+      sortOrderRaw && validSortOrders.includes(sortOrderRaw as SortOrder)
+        ? (sortOrderRaw as SortOrder)
+        : 'asc';
+
+    sort = {
+      key: sortKeyRaw as SortKey,
+      order,
+    };
+  }
 
   return {
     sex,
